@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Formulario de Búsqueda Avanzada -->
+    <form method="GET" action="{{ url_for('buscar_tareas') }}" class="mb-4 p-3 bg-light rounded">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label for="q" class="form-label">Buscar texto:</label>
+                <input type="text" 
+                       id="q" 
+                       name="q" 
+                       class="form-control" 
+                       placeholder="Título o persona asignada..."
+                       value="{{ query if query }}">
+            </div>
+            <div class="col-md-4">
+                <label for="estado" class="form-label">Estado:</label>
+                <select id="estado" name="estado" class="form-select">
+                    <option value="">Todos</option>
+                    <option value="Pendiente" {% if estado_seleccionado == 'Pendiente' %}selected{% endif %}>Pendiente</option>
+                    <option value="Completada" {% if estado_seleccionado == 'Completada' %}selected{% endif %}>Completada</option>
+                </select>
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-search me-2"></i>Buscar
+                </button>
+            </div>
+        </div>
+    </form>
+
+    <!-- Mostrar términos de búsqueda -->
+    {% if query or estado_seleccionado %}
+    <div class="alert alert-info mb-3">
+        Filtros aplicados:
+        {% if query %}<strong>Texto: "{{ query }}"</strong>{% endif %}
+        {% if estado_seleccionado %}<strong> | Estado: {{ estado_seleccionado }}</strong>{% endif %}
+        <a href="{{ url_for('ver_tareas') }}" class="float-end">
+            <i class="fas fa-times"></i> Limpiar filtros
+        </a>
+    </div>
+    {% endif %}
+
+    <h2 class="mb-4">📋 Listado de Tareas</h2>
+    
+    <!-- Botón para crear nueva tarea -->
+    <a href="{{ url_for('crear_tarea') }}" class="btn btn-success mb-3">
+        ➕ Nueva Tarea
+    </a>
+
+    <!-- Tabla de tareas -->
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Título</th>
+                    <th>Asignado a</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for tarea in tareas.items %}
+                <tr>
+                    <td>{{ tarea.id }}</td>
+                    <td>{{ tarea.titulo }}</td>
+                    <td>{{ tarea.asignado_a }}</td>
+                    <td>
+                        <span class="badge bg-{% if tarea.estado == 'Completada' %}success{% else %}warning{% endif %}">
+                            {{ tarea.estado }}
+                        </span>
+                    </td>
+                    <td>
+                        <a href="#" class="btn btn-sm btn-primary">✏️ Editar</a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" class="text-center">No hay tareas registradas</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Paginación -->
+    <nav aria-label="Navegación de páginas">
+        <ul class="pagination justify-content-center">
+            {% if tareas.has_prev %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('buscar_tareas', q=query, estado=estado_seleccionado, page=tareas.prev_num) }}">
+                        &laquo; Anterior
+                    </a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">&laquo; Anterior</span>
+                </li>
+            {% endif %}
+
+            {% for num in tareas.iter_pages() %}
+                {% if num %}
+                    <li class="page-item {% if num == tareas.page %}active{% endif %}">
+                        <a class="page-link" href="{{ url_for('buscar_tareas', q=query, estado=estado_seleccionado, page=num) }}">{{ num }}</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link">...</span>
+                    </li>
+                {% endif %}
+            {% endfor %}
+
+            {% if tareas.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('buscar_tareas', q=query, estado=estado_seleccionado, page=tareas.next_num) }}">
+                        Siguiente &raquo;
+                    </a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">Siguiente &raquo;</span>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+{% endblock %}

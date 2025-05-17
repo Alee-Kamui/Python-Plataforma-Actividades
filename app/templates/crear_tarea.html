@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Crear Nueva Tarea</h2>
+    <form method="POST" action="{{ url_for('crear_tarea') }}">
+        {{ form.hidden_tag() }}
+        
+        <div class="mb-3">
+            {{ form.titulo.label(class="form-label") }}
+            {{ form.titulo(class="form-control") }}
+            {% if form.titulo.errors %}
+                <div class="text-danger">{{ form.titulo.errors[0] }}</div>
+            {% endif %}
+        </div>
+        
+        <div class="mb-3">
+            {{ form.descripcion.label(class="form-label") }}
+            {{ form.descripcion(class="form-control", rows=4) }}
+        </div>
+        
+        <div class="mb-3">
+            {{ form.asignado_a.label(class="form-label") }}
+            {{ form.asignado_a(class="form-control") }}
+            {% if form.asignado_a.errors %}
+                <div class="text-danger">{{ form.asignado_a.errors[0] }}</div>
+            {% endif %}
+        </div>
+        
+        {{ form.submit(class="btn btn-primary") }}
+    </form>
+</div>
+<div class="mt-4">
+    <a href="{{ url_for('ver_tareas') }}" class="btn btn-info">
+        👀 Ver todas las tareas
+    </a>
+</div>
+{% endblock %}

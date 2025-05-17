@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro de Usuario</title>
+</head>
+<body>
+    <h1>Registro</h1>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+
+        <p>
+            {{ form.nombre.label }}<br>
+            {{ form.nombre(size=32) }}
+        </p>
+        <p>
+            {{ form.email.label }}<br>
+            {{ form.email(size=32) }}
+        </p>
+        <p>
+            {{ form.rol.label }}<br>
+            {{ form.rol() }}
+        </p>
+        <p>
+            {{ form.contraseña.label }}<br>
+            {{ form.contraseña(size=32) }}
+        </p>
+        <p>
+            {{ form.confirmar_contraseña.label }}<br>
+            {{ form.confirmar_contraseña(size=32) }}
+        </p>
+        <p>{{ form.submit() }}</p>
+    </form>
+</body>
+</html>

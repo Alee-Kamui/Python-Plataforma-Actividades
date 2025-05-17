@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Iniciar sesión</title>
+</head>
+<body>
+    <h2>Iniciar sesión</h2>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.email.label }}<br>
+            {{ form.email(size=32) }}
+        </p>
+        <p>
+            {{ form.contraseña.label }}<br>
+            {{ form.contraseña(size=32) }}
+        </p>
+        <p>{{ form.submit() }}</p>
+    </form>
+    <p>¿No tienes cuenta? <a href="{{ url_for('main.registro') }}">Regístrate aquí</a></p>
+</body>
+</html>
